@@ -23,4 +23,4 @@ A responsive Netflix-inspired frontend built using HTML, Tailwind css and JavaSc
 - LocalStorage API
 
 ## Live Demo
-https://yourlink.github.io/netflixclone/
+[https://yourlink.github.io/netflixclone/](https://nishchalvpandit.github.io/netflixclone/)
