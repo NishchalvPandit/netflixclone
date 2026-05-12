@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix</title>
+    <link rel="icon" href="images/netflixlogo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        netflixRed: '#E50914',
+                        netflixDark: '#222222',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        fadeInUp: 'fadeInUp 0.8s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .header-bg {
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.45)),
+                url('images/background-image.jpg') center/cover no-repeat;
+        }
+
+        .header-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 45%, rgba(0, 0, 0, 0.75) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header-bg > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-hero {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .animate-feat-1 {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.1s forwards;
+        }
+
+        .animate-feat-2 {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .animate-feat-3 {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.3s forwards;
+        }
+
+        .animate-feat-4 {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 600px;
+            padding: 24px 30px;
+            border-top: 2px solid #000;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        select.lang-select {
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            padding-right: 2rem;
+        }
+
+        .modal-backdrop {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-panel {
+            transform: scale(0.96) translateY(12px);
+            opacity: 0;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .modal-backdrop.open .modal-panel {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+    <!-- ===== HERO SECTION ===== -->
+    <div class="header-bg w-full min-h-screen min-h-[100dvh] border-b-8 border-[#222] flex flex-col">
+        <!-- Navbar -->
+        <nav class="flex items-center justify-between px-6 py-5 md:px-12 md:py-7 shrink-0">
+            <img src="images/logo.png" alt="Netflix" data-i18n-alt="altLogo"
+                class="w-28 md:w-40 cursor-pointer hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center gap-3 md:gap-5">
+                <select id="lang-nav" aria-label="Language"
+                    class="lang-select bg-black/60 text-white border border-gray-500 rounded px-3 py-1 md:px-5 md:py-2 text-sm md:text-base cursor-pointer hover:border-white transition-colors">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+                <button type="button" id="btn-sign-in"
+                    class="bg-[#E50914] text-white rounded px-4 py-1 md:px-5 md:py-2 text-sm md:text-base font-medium hover:bg-[#c11119] hover:scale-105 transition-all duration-200">
+                    Sign In
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Content: flex centering avoids shift when fonts load or scrollbar toggles -->
+        <div class="flex-1 flex flex-col justify-center items-center px-4 pb-20 md:pb-24 pt-4">
+            <div class="animate-hero text-center w-full max-w-[950px]">
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight mb-5 drop-shadow-lg" data-i18n="heroTitle">Unlimited movies, TV shows, and more</h1>
+                <h3 class="text-lg sm:text-2xl md:text-3xl font-normal mb-4 drop-shadow-md" data-i18n="heroSubtitle">Watch anywhere. Cancel anytime.</h3>
+                <p class="text-base sm:text-xl mb-7 drop-shadow-md" data-i18n="heroCta">Ready to watch? Enter your email to create or restart your membership.</p>
+                <form id="form-hero-email" class="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-[700px] mx-auto">
+                    <input type="email" data-i18n-placeholder="phEmail" placeholder="" required
+                        class="w-full sm:flex-1 sm:min-w-[280px] px-5 py-4 text-base rounded bg-black/70 border border-gray-600 text-white placeholder-gray-400 outline-none focus:border-white focus:bg-black/90 transition-colors duration-200">
+                    <button type="submit"
+                        class="shrink-0 bg-[#E50914] text-white px-8 py-4 text-lg sm:text-2xl font-semibold rounded flex items-center justify-center gap-2 hover:bg-[#c11119] transition-colors whitespace-nowrap">
+                        <span data-i18n="btnGetStarted"></span>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FEATURES SECTION ===== -->
+    <div class="bg-black">
+
+        <div
+            class="animate-feat-1 flex flex-col lg:flex-row items-center gap-8 px-6 md:px-16 py-16 border-b-8 border-[#222]">
+            <div class="flex-1 text-center lg:text-left">
+                <h2 class="text-3xl md:text-5xl font-bold mb-5" data-i18n="feat1Title"></h2>
+                <p class="text-lg md:text-2xl text-gray-300" data-i18n="feat1Body"></p>
+            </div>
+            <div class="flex-1 flex justify-center">
+                <img src="images/feature-1.png" alt="" data-i18n-alt="altTV" class="w-full max-w-[550px]">
+            </div>
+        </div>
+
+        <div
+            class="animate-feat-2 flex flex-col lg:flex-row-reverse items-center gap-8 px-6 md:px-16 py-16 border-b-8 border-[#222]">
+            <div class="flex-1 text-center lg:text-left">
+                <h2 class="text-3xl md:text-5xl font-bold mb-5" data-i18n="feat2Title"></h2>
+                <p class="text-lg md:text-2xl text-gray-300" data-i18n="feat2Body"></p>
+            </div>
+            <div class="flex-1 flex justify-center">
+                <img src="images/feature-2.png" alt="" data-i18n-alt="altMobile" class="w-full max-w-[550px]">
+            </div>
+        </div>
+
+        <div
+            class="animate-feat-3 flex flex-col lg:flex-row items-center gap-8 px-6 md:px-16 py-16 border-b-8 border-[#222]">
+            <div class="flex-1 text-center lg:text-left">
+                <h2 class="text-3xl md:text-5xl font-bold mb-5" data-i18n="feat3Title"></h2>
+                <p class="text-lg md:text-2xl text-gray-300" data-i18n="feat3Body"></p>
+            </div>
+            <div class="flex-1 flex justify-center">
+                <img src="images/feature-3.png" alt="" data-i18n-alt="altDevices" class="w-full max-w-[550px]">
+            </div>
+        </div>
+
+        <div
+            class="animate-feat-4 flex flex-col lg:flex-row-reverse items-center gap-8 px-6 md:px-16 py-16 border-b-8 border-[#222]">
+            <div class="flex-1 text-center lg:text-left">
+                <h2 class="text-3xl md:text-5xl font-bold mb-5" data-i18n="feat4Title"></h2>
+                <p class="text-lg md:text-2xl text-gray-300" data-i18n="feat4Body"></p>
+            </div>
+            <div class="flex-1 flex justify-center">
+                <img src="images/feature-4.png" alt="" data-i18n-alt="altKids" class="w-full max-w-[550px]">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== FAQ SECTION ===== -->
+    <div class="bg-black border-b-8 border-[#222] px-6 md:px-16 py-16">
+        <h2 class="text-3xl md:text-5xl font-bold text-center mb-10" data-i18n="faqSectionTitle"></h2>
+
+        <div class="max-w-[900px] mx-auto mb-14 space-y-2">
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq1Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl space-y-4" data-i18n-html="faq1A"></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq2Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl" data-i18n-html="faq2A"></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq3Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl space-y-4" data-i18n-html="faq3A"></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq4Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl" data-i18n-html="faq4A"></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq5Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl" data-i18n-html="faq5A"></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button"
+                    class="faq-question w-full bg-[#2d2d2d] text-white px-7 py-6 text-lg md:text-2xl text-left flex justify-between items-center gap-4 hover:bg-[#414141] transition-colors">
+                    <span data-i18n="faq6Q"></span>
+                    <svg class="faq-icon w-7 h-7 md:w-9 md:h-9 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="faq-answer bg-[#2d2d2d] text-lg md:text-2xl space-y-4" data-i18n-html="faq6A"></div>
+            </div>
+
+        </div>
+
+        <div class="max-w-[900px] mx-auto text-center">
+            <p class="text-base sm:text-xl mb-6" data-i18n="bottomCta"></p>
+            <form id="form-bottom-email" class="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-[700px] mx-auto">
+                <input type="email" data-i18n-placeholder="phEmail" placeholder="" required
+                    class="w-full sm:flex-1 sm:min-w-[280px] px-5 py-4 text-base rounded bg-black/70 border border-gray-600 text-white placeholder-gray-400 outline-none focus:border-white focus:bg-black/90 transition-colors duration-200">
+                <button type="submit"
+                    class="shrink-0 bg-[#E50914] text-white px-8 py-4 text-lg sm:text-2xl font-semibold rounded flex items-center justify-center gap-2 hover:bg-[#c11119] transition-colors whitespace-nowrap">
+                    <span data-i18n="btnGetStarted"></span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-black text-gray-500 px-6 md:px-16 py-16">
+        <div class="max-w-[1000px] mx-auto">
+            <p class="mb-8 text-base" data-i18n="footerCall"></p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-sm">
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="hover:underline" data-i18n="linkFaq"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkInvestor"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkPrivacy"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkSpeed"></a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="hover:underline" data-i18n="linkHelp"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkJobs"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkCookies"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkLegal"></a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="hover:underline" data-i18n="linkAccount"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkWays"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkCorporate"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkOnly"></a>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <a href="#" class="hover:underline" data-i18n="linkMedia"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkTerms"></a>
+                    <a href="#" class="hover:underline" data-i18n="linkContact"></a>
+                </div>
+            </div>
+            <select id="lang-footer" aria-label="Language"
+                class="lang-select bg-black/40 text-white border border-gray-600 rounded px-5 py-2 mb-5 cursor-pointer hover:border-white transition-colors">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+            </select>
+            <p class="text-xs mb-2" data-i18n="footerRegion"></p>
+            <p class="text-xs" data-i18n="footerClone"></p>
+        </div>
+    </footer>
+
+    <!-- Sign In modal -->
+    <div id="signin-backdrop" class="modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="signin-title" hidden>
+        <div class="modal-panel relative w-full max-w-[450px] rounded bg-black/95 border border-white/15 shadow-2xl px-8 sm:px-12 py-10 md:py-14 text-white">
+            <button type="button" id="signin-close" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors" aria-label="Close">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <h2 id="signin-title" class="text-3xl md:text-4xl font-bold mb-6" data-i18n="signinTitle"></h2>
+            <form id="form-signin" class="space-y-4">
+                <div>
+                    <label for="signin-email" class="sr-only" data-i18n="signinEmailLabel"></label>
+                    <input id="signin-email" name="email" type="email" autocomplete="email" required data-i18n-placeholder="phEmailSignin"
+                        class="w-full px-4 py-4 rounded bg-[#333] border border-[#333] text-white placeholder-gray-400 outline-none focus:border-white focus:bg-[#454545] transition-colors">
+                </div>
+                <div>
+                    <label for="signin-password" class="sr-only" data-i18n="signinPasswordLabel"></label>
+                    <input id="signin-password" name="password" type="password" autocomplete="current-password" required data-i18n-placeholder="phPassword"
+                        class="w-full px-4 py-4 rounded bg-[#333] border border-[#333] text-white placeholder-gray-400 outline-none focus:border-white focus:bg-[#454545] transition-colors">
+                </div>
+                <button type="submit" class="w-full bg-[#E50914] hover:bg-[#c11119] text-white font-semibold py-3.5 rounded mt-2 transition-colors" data-i18n="signinSubmit"></button>
+                <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer select-none">
+                    <input type="checkbox" class="rounded border-gray-500 bg-[#333] text-red-600 focus:ring-red-600">
+                    <span data-i18n="signinRemember"></span>
+                </label>
+            </form>
+            <p class="mt-6 text-center text-gray-300 text-sm">
+                <span data-i18n="signinNew"></span>
+                <a href="#" class="text-white hover:underline font-medium" data-i18n="signinSignupLink"></a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const STR = {
+                en: {
+                    altLogo: 'Netflix',
+                    altTV: 'TV',
+                    altMobile: 'Mobile',
+                    altDevices: 'Devices',
+                    altKids: 'Kids',
+                    heroTitle: 'Unlimited movies, TV shows, and more',
+                    heroSubtitle: 'Watch anywhere. Cancel anytime.',
+                    heroCta: 'Ready to watch? Enter your email to create or restart your membership.',
+                    phEmail: 'Email address',
+                    phEmailSignin: 'Email or phone number',
+                    phPassword: 'Password',
+                    btnGetStarted: 'Get Started',
+                    feat1Title: 'Enjoy on your TV',
+                    feat1Body: 'Watch on Smart TVs, Playstation, Xbox, Chromecast, Apple TV, Blu-ray players, and more.',
+                    feat2Title: 'Download your shows to watch offline',
+                    feat2Body: 'Save your favorites easily and always have something to watch.',
+                    feat3Title: 'Watch everywhere',
+                    feat3Body: 'Stream unlimited movies and TV shows on your phone, tablet, laptop, and TV.',
+                    feat4Title: 'Create profiles for kids',
+                    feat4Body: 'Send kids on adventures with their favorite characters in a space made just for them — free with your membership.',
+                    faqSectionTitle: 'Frequently Asked Questions',
+                    faq1Q: 'What is Netflix?',
+                    faq1A: '<p>Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.</p><p>You can watch as much as you want, whenever you want without a single commercial – all for one low monthly price. There\'s always something new to discover and new TV shows and movies are added every week!</p>',
+                    faq2Q: 'How much does Netflix cost?',
+                    faq2A: '<p>Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. Plans range from USD 2.99 to USD 9.99 a month. No extra costs, no contracts.</p>',
+                    faq3Q: 'Where can I watch?',
+                    faq3A: '<p>Watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web at netflix.com from your personal computer or on any internet-connected device that offers the Netflix app, including smart TVs, smartphones, tablets, streaming media players and game consoles.</p><p>You can also download your favorite shows with the iOS, Android, or Windows 10 app. Use downloads to watch while you\'re on the go and without an internet connection. Take Netflix with you anywhere.</p>',
+                    faq4Q: 'How do I cancel?',
+                    faq4A: '<p>Netflix is flexible. There are no pesky contracts and no commitments. You can easily cancel your account online in two clicks. There are no cancellation fees – start or stop your account anytime.</p>',
+                    faq5Q: 'What can I watch on Netflix?',
+                    faq5A: '<p>Netflix has an extensive library of feature films, documentaries, TV shows, anime, award-winning Netflix originals, and more. Watch as much as you want, anytime you want.</p>',
+                    faq6Q: 'Is Netflix good for kids?',
+                    faq6A: '<p>The Netflix Kids experience is included in your membership to give parents control while kids enjoy family-friendly TV shows and movies in their own space.</p><p>Kids profiles come with PIN-protected parental controls that let you restrict the maturity rating of content kids can watch and block specific titles you don\'t want kids to see.</p>',
+                    bottomCta: 'Ready to watch? Enter your email to create or restart your membership.',
+                    footerCall: 'Questions? Call 977+9848568974',
+                    linkFaq: 'FAQ',
+                    linkInvestor: 'Investor Relations',
+                    linkPrivacy: 'Privacy',
+                    linkSpeed: 'Speed Test',
+                    linkHelp: 'Help Center',
+                    linkJobs: 'Jobs',
+                    linkCookies: 'Cookie Preferences',
+                    linkLegal: 'Legal Notices',
+                    linkAccount: 'Account',
+                    linkWays: 'Ways to Watch',
+                    linkCorporate: 'Corporate Information',
+                    linkOnly: 'Only on Netflix',
+                    linkMedia: 'Media Center',
+                    linkTerms: 'Terms of Use',
+                    linkContact: 'Contact Us',
+                    footerRegion: 'Netflix Clone — United States',
+                    footerClone: 'This is a front-end demo only.',
+                    signIn: 'Sign In',
+                    signinTitle: 'Sign In',
+                    signinEmailLabel: 'Email or phone number',
+                    signinPasswordLabel: 'Password',
+                    signinSubmit: 'Sign In',
+                    signinRemember: 'Remember me',
+                    signinNew: 'New to Netflix? ',
+                    signinSignupLink: 'Sign up now.',
+                    langOptEn: 'English',
+                    langOptEs: 'Español',
+                    closeAria: 'Close',
+                    toastDemo: 'Thanks! This clone has no backend — your email was not sent.',
+                    toastSignin: 'Sign-in is for display only (no server).'
+                },
+                es: {
+                    altLogo: 'Netflix',
+                    altTV: 'Televisor',
+                    altMobile: 'Móvil',
+                    altDevices: 'Dispositivos',
+                    altKids: 'Niños',
+                    heroTitle: 'Películas y series ilimitadas y mucho más',
+                    heroSubtitle: 'Disfruta donde quieras. Cancela cuando quieras.',
+                    heroCta: '¿Listo para ver Netflix? Ingresa tu email para crear o reiniciar tu membresía.',
+                    phEmail: 'Dirección de email',
+                    phEmailSignin: 'Email o número de teléfono',
+                    phPassword: 'Contraseña',
+                    btnGetStarted: 'Comenzar',
+                    feat1Title: 'Disfruta en tu TV',
+                    feat1Body: 'Ve en Smart TV, PlayStation, Xbox, Chromecast, Apple TV, reproductores Blu-ray y más.',
+                    feat2Title: 'Descarga tus series para verlas sin conexión',
+                    feat2Body: 'Guarda tus favoritos fácilmente y siempre tendrás algo para ver.',
+                    feat3Title: 'Disfruta donde quieras',
+                    feat3Body: 'Transmite películas y series ilimitadas en tu teléfono, tablet, computadora y TV.',
+                    feat4Title: 'Crea perfiles para niños',
+                    feat4Body: 'Los niños vivirán aventuras con sus personajes favoritos en un espacio diseñado solo para ellos, gratis con tu membresía.',
+                    faqSectionTitle: 'Preguntas frecuentes',
+                    faq1Q: '¿Qué es Netflix?',
+                    faq1A: '<p>Netflix es un servicio de streaming que ofrece una gran variedad de series, películas, anime, documentales y más en miles de dispositivos conectados a internet.</p><p>Puedes ver todo lo que quieras, cuando quieras, sin un solo anuncio, todo por un precio mensual bajo. Siempre hay algo nuevo por descubrir y cada semana se añaden nuevas series y películas.</p>',
+                    faq2Q: '¿Cuánto cuesta Netflix?',
+                    faq2A: '<p>Mira Netflix en tu smartphone, tablet, Smart TV, computadora o dispositivo de streaming, todo por una tarifa mensual fija. Los planes van de USD 2.99 a USD 9.99 al mes. Sin costos extra ni contratos.</p>',
+                    faq3Q: '¿Dónde puedo ver?',
+                    faq3A: '<p>Donde quieras, cuando quieras. Inicia sesión con tu cuenta de Netflix para ver al instante en la web en netflix.com desde tu computadora o en cualquier dispositivo conectado a internet que tenga la app de Netflix, como smart TVs, smartphones, tablets, reproductores multimedia y consolas.</p><p>También puedes descargar tus series favoritas con la app para iOS, Android o Windows 10. Usa las descargas para ver sin conexión en el camino. Lleva Netflix contigo a cualquier parte.</p>',
+                    faq4Q: '¿Cómo cancelo?',
+                    faq4A: '<p>Netflix es flexible. No hay contratos molestos ni compromisos. Puedes cancelar tu cuenta en línea con solo dos clics. No hay cargos por cancelación: comienza o detén tu cuenta cuando quieras.</p>',
+                    faq5Q: '¿Qué puedo ver en Netflix?',
+                    faq5A: '<p>Netflix tiene un amplio catálogo de películas, documentales, series, anime, originales de Netflix galardonados y más. Mira todo lo que quieras, cuando quieras.</p>',
+                    faq6Q: '¿Es Netflix bueno para los niños?',
+                    faq6A: '<p>La experiencia Netflix para niños está incluida en tu membresía para dar a los padres control mientras los niños disfrutan series y películas familiares en su propio espacio.</p><p>Los perfiles infantiles incluyen controles parentales con PIN que permiten restringir la clasificación por edades y bloquear títulos específicos.</p>',
+                    bottomCta: '¿Listo para ver Netflix? Ingresa tu email para crear o reiniciar tu membresía.',
+                    footerCall: '¿Preguntas? Llama al 977+9848568974',
+                    linkFaq: 'Preguntas frecuentes',
+                    linkInvestor: 'Relación con inversionistas',
+                    linkPrivacy: 'Privacidad',
+                    linkSpeed: 'Prueba de velocidad',
+                    linkHelp: 'Centro de ayuda',
+                    linkJobs: 'Empleo',
+                    linkCookies: 'Preferencias de cookies',
+                    linkLegal: 'Avisos legales',
+                    linkAccount: 'Cuenta',
+                    linkWays: 'Formas de ver',
+                    linkCorporate: 'Información corporativa',
+                    linkOnly: 'Solo en Netflix',
+                    linkMedia: 'Prensa',
+                    linkTerms: 'Términos de uso',
+                    linkContact: 'Contáctanos',
+                    footerRegion: 'Clon de Netflix — Estados Unidos',
+                    footerClone: 'Esto es solo una demo de interfaz.',
+                    signIn: 'Iniciar sesión',
+                    signinTitle: 'Iniciar sesión',
+                    signinEmailLabel: 'Email o número de teléfono',
+                    signinPasswordLabel: 'Contraseña',
+                    signinSubmit: 'Iniciar sesión',
+                    signinRemember: 'Recordarme',
+                    signinNew: '¿Primera vez en Netflix? ',
+                    signinSignupLink: 'Suscríbete ahora.',
+                    langOptEn: 'Inglés',
+                    langOptEs: 'Español',
+                    closeAria: 'Cerrar',
+                    toastDemo: '¡Gracias! Este clon no tiene servidor — tu email no se envió.',
+                    toastSignin: 'El inicio de sesión es solo visual (sin servidor).'
+                }
+            };
+
+            function t(lang, key) {
+                return (STR[lang] && STR[lang][key]) || STR.en[key] || '';
+            }
+
+            function setLang(lang) {
+                if (lang !== 'en' && lang !== 'es') lang = 'en';
+                document.documentElement.lang = lang;
+                try {
+                    localStorage.setItem('nf-lang', lang);
+                } catch (e) { /* ignore */ }
+
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n');
+                    if (key) el.textContent = t(lang, key);
+                });
+                document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n-html');
+                    if (key) el.innerHTML = t(lang, key);
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n-placeholder');
+                    if (key) el.setAttribute('placeholder', t(lang, key));
+                });
+                document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+                    var key = el.getAttribute('data-i18n-alt');
+                    if (key) el.setAttribute('alt', t(lang, key));
+                });
+
+                var nav = document.getElementById('lang-nav');
+                var foot = document.getElementById('lang-footer');
+                if (nav) nav.value = lang;
+                if (foot) foot.value = lang;
+
+                var opts = document.querySelectorAll('#lang-nav option, #lang-footer option');
+                opts.forEach(function (opt) {
+                    if (opt.value === 'en') opt.textContent = t(lang, 'langOptEn');
+                    if (opt.value === 'es') opt.textContent = t(lang, 'langOptEs');
+                });
+
+                var signBtn = document.getElementById('btn-sign-in');
+                if (signBtn) signBtn.textContent = t(lang, 'signIn');
+
+                var closeBtn = document.getElementById('signin-close');
+                if (closeBtn) closeBtn.setAttribute('aria-label', t(lang, 'closeAria'));
+            }
+
+            var saved = 'en';
+            try {
+                saved = localStorage.getItem('nf-lang') || 'en';
+            } catch (e) { /* ignore */ }
+            setLang(saved === 'es' ? 'es' : 'en');
+
+            document.getElementById('lang-nav').addEventListener('change', function () {
+                setLang(this.value);
+            });
+            document.getElementById('lang-footer').addEventListener('change', function () {
+                setLang(this.value);
+            });
+
+            /* FAQ */
+            document.querySelectorAll('.faq-question').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var item = btn.closest('.faq-item');
+                    var isOpen = item.classList.contains('open');
+                    document.querySelectorAll('.faq-item').forEach(function (i) {
+                        i.classList.remove('open');
+                    });
+                    if (!isOpen) item.classList.add('open');
+                });
+            });
+
+            /* Sign-in modal */
+            var backdrop = document.getElementById('signin-backdrop');
+            var btnSign = document.getElementById('btn-sign-in');
+            var btnClose = document.getElementById('signin-close');
+
+            function openModal() {
+                backdrop.removeAttribute('hidden');
+                requestAnimationFrame(function () {
+                    backdrop.classList.add('open');
+                });
+                document.body.style.overflow = 'hidden';
+                document.getElementById('signin-email').focus();
+            }
+            function closeModal() {
+                backdrop.classList.remove('open');
+                document.body.style.overflow = '';
+                setTimeout(function () {
+                    backdrop.setAttribute('hidden', '');
+                }, 250);
+            }
+
+            btnSign.addEventListener('click', openModal);
+            btnClose.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) closeModal();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && backdrop.classList.contains('open')) closeModal();
+            });
+
+            document.getElementById('form-signin').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var lang = document.documentElement.lang === 'es' ? 'es' : 'en';
+                alert(t(lang, 'toastSignin'));
+            });
+
+            function demoEmailSubmit(e) {
+                e.preventDefault();
+                var lang = document.documentElement.lang === 'es' ? 'es' : 'en';
+                alert(t(lang, 'toastDemo'));
+            }
+            document.getElementById('form-hero-email').addEventListener('submit', demoEmailSubmit);
+            document.getElementById('form-bottom-email').addEventListener('submit', demoEmailSubmit);
+        })();
+    </script>
+
+</body>
+
+</html>
