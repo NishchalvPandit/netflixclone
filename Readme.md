@@ -1,3 +1,6 @@
+## Live Demo
+netlifx-ui-clone.netlify.app
+
 # Netflix Clone
 
 A responsive Netflix-inspired frontend built using HTML, Tailwind css and JavaScript.
@@ -22,5 +25,3 @@ A responsive Netflix-inspired frontend built using HTML, Tailwind css and JavaSc
 - CSS Animations
 - LocalStorage API
 
-## Live Demo
-[https://yourlink.github.io/netflixclone/](https://nishchalvpandit.github.io/netflixclone/)
