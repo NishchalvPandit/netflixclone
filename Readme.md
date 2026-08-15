@@ -1,21 +1,22 @@
 ## Live Demo
-netlifx-ui-clone.netlify.app
+streamdemo (frontend portfolio project)
 
-# Netflix Clone
+# streamdemo
 
-A responsive Netflix-inspired frontend built using HTML, Tailwind css and JavaScript.
+A responsive streaming-style frontend UI demo built with HTML, Tailwind CSS, and JavaScript.
+
+**Not affiliated with Netflix or any commercial streaming service.** This is a portfolio / practice project only — no backend, accounts, or payments.
 
 ## Features
 
-- Responsive Netflix Clone UI
+- Responsive streaming landing UI
 - Tailwind CSS styling
 - Multi-language support
 - Interactive FAQ accordion
-- Animated Sign In modal
+- Animated Sign In modal (display-only)
 - LocalStorage language persistence
-- Fully responsive design
+- Clear “portfolio demo” notice to avoid phishing false positives
 - Smooth animations and transitions
-- Frontend-only authentication demo
 
 ## Technologies
 - HTML5
@@ -24,4 +25,3 @@ A responsive Netflix-inspired frontend built using HTML, Tailwind css and JavaSc
 - Google Fonts
 - CSS Animations
 - LocalStorage API
-
