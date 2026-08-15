@@ -1,5 +1,6 @@
 ## Live Demo
 streamdemo (frontend portfolio project)
+https://steaming-ui-clone.netlify.app/
 
 # streamdemo
 
